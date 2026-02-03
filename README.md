@@ -5,7 +5,6 @@ An AI-powered chatbot that intelligently scrapes and analyzes websites using Fir
 ## ✨ Features
 
 - **🤖 Intelligent Scraping**: Automatically decides when to scrape websites vs. using cached content
-- **🎯 Smart URL Detection**: Extracts and processes URLs from natural language queries
 - **🔍 Deep Dive Analysis**: Discovers and analyzes multiple related pages for comprehensive answers
 - **📊 Source Citations**: Provides clear references to all scraped sources
 - **💬 Conversational Context**: Maintains chat history for contextual follow-up questions
@@ -229,6 +228,7 @@ Contributions are welcome! The modular architecture makes it easy to:
 - **Single page scraping**: ~2-5 seconds
 - **Deep dive analysis**: ~30-60 seconds (depends on number of pages)
 - **LLM response time**: ~1-3 seconds
+
 
 
 
