@@ -221,44 +221,16 @@ Contributions are welcome! The modular architecture makes it easy to:
 - [Streamlit](https://streamlit.io/) - Web application framework
 - [LangChain](https://www.langchain.com/) - LLM integration
 
-## 📧 Contact
 
-[Add your contact information here]
 
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**Import Errors**
-```bash
-# Ensure you're in the correct directory
-cd c:\sinergia_ak\chatbot\geocom_chatbot
-```
-
-**Firecrawl Connection Failed**
-- Verify Firecrawl is running at the configured URL
-- Check `FIRECRAWL_API_URL` in `config.json`
-
-**AWS Authentication Issues**
-- Verify AWS credentials are set correctly
-- Check IAM permissions for Bedrock access
-- Ensure the region supports your chosen model
-
-**Module Not Found**
-```bash
-# Install missing dependencies
-pip install streamlit langchain-aws mcp
-```
 
 ## 📊 Performance
 
 - **Single page scraping**: ~2-5 seconds
 - **Deep dive analysis**: ~30-60 seconds (depends on number of pages)
 - **LLM response time**: ~1-3 seconds
-- **Concurrent requests**: Supported via async operations
 
----
 
-**Built with ❤️ using modern Python architecture**
+
 
 
