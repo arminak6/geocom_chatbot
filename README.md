@@ -198,19 +198,8 @@ from chatbot_core import heuristic_score_url
 score = heuristic_score_url("https://example.com/about", "Who are they?")
 ```
 
-## 🤝 Contributing
 
-Contributions are welcome! The modular architecture makes it easy to:
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes in the appropriate module
-4. Test thoroughly
-5. Submit a pull request
-
-## 📝 License
-
-[Add your license here]
 
 ## 🙏 Acknowledgments
 
@@ -227,6 +216,7 @@ Contributions are welcome! The modular architecture makes it easy to:
 - **Single page scraping**: ~2-5 seconds
 - **Deep dive analysis**: ~30-60 seconds (depends on number of pages)
 - **LLM response time**: ~1-3 seconds
+
 
 
 
