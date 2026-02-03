@@ -1,6 +1,6 @@
 # 🔥 Firecrawl MCP Chatbot
 
-A professional AI-powered chatbot that intelligently scrapes and analyzes websites using Firecrawl MCP and AWS Bedrock LLM. Built with Streamlit for an intuitive user interface.
+An AI-powered chatbot that intelligently scrapes and analyzes websites using Firecrawl MCP and AWS Bedrock LLM. Built with Streamlit for an intuitive user interface.
 
 ## ✨ Features
 
@@ -260,3 +260,4 @@ pip install streamlit langchain-aws mcp
 ---
 
 **Built with ❤️ using modern Python architecture**
+
