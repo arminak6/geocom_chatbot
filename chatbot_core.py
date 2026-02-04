@@ -314,21 +314,14 @@ async def firecrawl_map_subpages_via_mcp(
         print(f"  {idx}. {url}")
     print()
 
+    # Use LLM to score URLs based on relevance to user question
     if llm is not None:
-        llm_scores = await score_urls_with_llm(llm, user_question, candidates)
+        url_scores = await score_urls_with_llm(llm, user_question, candidates)
     else:
-        llm_scores = {u: 0.0 for u in candidates}
+        # Fallback: assign equal scores if no LLM available
+        url_scores = {u: 5.0 for u in candidates}
 
-    heuristic_scores = {u: heuristic_score_url(u, user_question) for u in candidates}
-
-    url_scores = {}
-    for u in candidates:
-        llm_score = llm_scores.get(u, 0.0)
-        h_score = heuristic_scores.get(u, 0.0)
-        combined = (0.7 * llm_score) + (0.3 * h_score)
-        url_scores[u] = combined
-
-    print("🔢 Combined URL scores (70% LLM + 30% heuristic):", url_scores)
+    print("🔢 LLM-based URL scores:", url_scores)
     scored: List[tuple] = []
     for idx, u in enumerate(candidates):
         s = float(url_scores.get(u, 0.0))
@@ -427,8 +420,8 @@ async def llm_answer(
                 messages.append({"role": role, "content": content})
 
     if website_content:
-        HEAD = 100000
-        TAIL = 50000
+        HEAD = 200000
+        TAIL = 100000
 
         if len(website_content) > HEAD + TAIL:
             content_for_ai = (
@@ -492,61 +485,6 @@ async def llm_answer(
 
 
 # ====== URL SCORING ======
-
-def heuristic_score_url(url: str, user_question: str) -> float:
-    """
-    Score URL relevance using heuristics.
-    
-    Args:
-        url: URL to score
-        user_question: User's question
-        
-    Returns:
-        Relevance score between 0 and 10
-    """
-    url_lower = url.lower()
-    question_lower = user_question.lower()
-    
-    high_relevance = [
-        'about', 'team', 'people', 'management', 'leadership', 'staff',
-        'employees', 'organization', 'who-we-are', 'chi-siamo', 'quienes-somos',
-        'company', 'contact', 'contacts', 'address', 'location', 'careers',
-        'jobs', 'work', 'join', 'offices', 'product', 'service', 'offering','technology', 'manufacturing',
-    ]
-    
-    medium_relevance = [
-         'solution', 
-        'production', 'facility', 'plant', 'sustainability', 'quality', 'innovation' , 'news'
-    ]
-    
-    low_relevance = [
-        'blog', 'news', 'article', 'post', 'timeline', 'history', 'archive'
-    ]
-    
-    score = 2.0  # Base score
-    
-    for keyword in high_relevance:
-        if keyword in url_lower:
-            score += 5.0
-            break
-    
-    for keyword in medium_relevance:
-        if keyword in url_lower:
-            score += 2.5
-            break
-    
-    for keyword in low_relevance:
-        if keyword in url_lower:
-            score -= 1.0
-            break
-
-    question_words = [w for w in question_lower.split() if len(w) > 3]
-    for word in question_words[:5]:  
-        if word in url_lower:
-            score += 1.5
-            break
-    
-    return max(0.0, min(10.0, score))
 
 
 async def score_urls_with_llm(
@@ -632,29 +570,30 @@ Rules:
         print(repr(cleaned))
 
         if not cleaned or not cleaned.strip():
-            print(f"⚠️ LLM URL scoring returned empty output for chunk (len={len(chunk)}). Using heuristic scores.")
+            print(f"⚠️ LLM URL scoring returned empty output for chunk (len={len(chunk)}). Assigning neutral score 5.0.")
             for u in chunk:
-                all_scores[u] = heuristic_score_url(u, user_question)
+                all_scores[u] = 5.0
             continue
 
         try:
             data = json.loads(cleaned)
             scores = data.get("scores", {})
             if not scores:
-                print(f"⚠️ No scores in LLM response for chunk. Using heuristic scores.")
+                print(f"⚠️ No scores in LLM response for chunk. Assigning neutral score 5.0.")
                 for u in chunk:
-                    all_scores[u] = heuristic_score_url(u, user_question)
+                    all_scores[u] = 5.0
             else:
                 for u in chunk:
                     if u in scores:
                         all_scores[u] = float(scores[u])
                     else:
-                        all_scores[u] = heuristic_score_url(u, user_question)
+                        # Missing score for this URL, assign neutral
+                        all_scores[u] = 5.0
                 print("✅ Parsed URL scores for chunk:", {u: all_scores[u] for u in chunk})
         except Exception as e:
             print(f"⚠️ LLM URL scoring failed for chunk (len={len(chunk)}): {e}")
             for u in chunk:
-                all_scores[u] = heuristic_score_url(u, user_question)
+                all_scores[u] = 5.0
 
     print("✅ Final merged URL scores:", all_scores)
     return all_scores
@@ -700,7 +639,7 @@ async def chat_once(
                 region_name=AWS_REGION,
                 model_kwargs={
                     "temperature": 0.3,
-                    "max_completion_tokens": 512,
+                    "max_completion_tokens": 2048,
                     "top_p": 0.9,
                     "reasoning_effort": "medium",
                 },
@@ -718,7 +657,7 @@ async def chat_once(
         region_name=AWS_REGION,
         model_kwargs={
             "temperature": 0.3,
-            "max_completion_tokens": 512,
+            "max_completion_tokens": 2048,
             "top_p": 0.9,
             "reasoning_effort": "medium",
         },
@@ -864,7 +803,7 @@ async def deep_dive_once(
         region_name=AWS_REGION,
         model_kwargs={
             "temperature": 0.3,
-            "max_completion_tokens": 1024,
+            "max_completion_tokens": 4096,
             "top_p": 0.9,
             "reasoning_effort": "medium",
         },
