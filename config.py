@@ -19,7 +19,7 @@ _config = load_config()
 
 # Configuration constants
 AWS_REGION: str = _config.get("AWS_REGION", "eu-central-1")
-MODEL_ID: str = _config.get("MODEL_ID", "openai.gpt-oss-20b-1:0")
+MODEL_ID: str = _config.get("MODEL_ID", "openai.gpt-oss-120b-1:0")
 FIRECRAWL_API_URL: str = _config.get("FIRECRAWL_API_URL", "http://localhost:3002")
 
 # Set AWS credentials from config if provided
