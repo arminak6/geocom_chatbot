@@ -1,6 +1,6 @@
 # 🔥 Firecrawl MCP Chatbot
 
-A professional AI-powered chatbot that intelligently scrapes and analyzes websites using Firecrawl MCP and AWS Bedrock LLM. Built with Streamlit for an intuitive user interface.
+An AI-powered chatbot that intelligently scrapes and analyzes websites using Firecrawl MCP and AWS Bedrock LLM.
 
 ## ✨ Features
 
@@ -8,7 +8,6 @@ A professional AI-powered chatbot that intelligently scrapes and analyzes websit
 - **🎯 Smart URL Detection**: Extracts and processes URLs from natural language queries
 - **🔍 Deep Dive Analysis**: Discovers and analyzes multiple related pages for comprehensive answers
 - **📊 Source Citations**: Provides clear references to all scraped sources
-- **💬 Conversational Context**: Maintains chat history for contextual follow-up questions
 - **⚡ Async Processing**: Fast, non-blocking operations for better performance
 
 ## 🏗️ Architecture
@@ -161,56 +160,6 @@ The deep dive feature uses **LLM-based scoring** to rank subpage relevance:
 └── main.py                # Entry point
 ```
 
-### Adding Features
-
-**Modify UI**: Edit `app.py`
-```python
-# Change title, add new buttons, modify layout
-```
-
-**Update AI Behavior**: Edit `chatbot_core.py`
-```python
-# Modify system prompts, scraping logic, or URL scoring
-```
-
-**Add Utilities**: Edit `utils.py`
-```python
-# Add new text processing or parsing functions
-```
-
-**Change Configuration**: Edit `config.py` or `config.json`
-```python
-# Add new configuration options
-```
-
-## 🧪 Testing
-
-### Test Individual Modules
-
-```python
-# Test URL extraction
-from utils import extract_url_from_text
-url = extract_url_from_text("Visit www.example.com")
-assert url == "https://www.example.com"
-
-# Test configuration
-import config
-print(config.AWS_REGION)
-```
-
-## 🤝 Contributing
-
-Contributions are welcome! The modular architecture makes it easy to:
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes in the appropriate module
-4. Test thoroughly
-5. Submit a pull request
-
-## 📝 License
-
-[Add your license here]
 
 ## 🙏 Acknowledgments
 
@@ -219,34 +168,8 @@ Contributions are welcome! The modular architecture makes it easy to:
 - [Streamlit](https://streamlit.io/) - Web application framework
 - [LangChain](https://www.langchain.com/) - LLM integration
 
-## 📧 Contact
 
-[Add your contact information here]
 
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**Import Errors**
-```bash
-# Ensure you're in the correct directory
-cd c:\sinergia_ak\chatbot\geocom_chatbot
-```
-
-**Firecrawl Connection Failed**
-- Verify Firecrawl is running at the configured URL
-- Check `FIRECRAWL_API_URL` in `config.json`
-
-**AWS Authentication Issues**
-- Verify AWS credentials are set correctly
-- Check IAM permissions for Bedrock access
-- Ensure the region supports your chosen model
-
-**Module Not Found**
-```bash
-# Install missing dependencies
-pip install streamlit langchain-aws mcp
-```
 
 ## 📊 Performance
 
@@ -257,4 +180,3 @@ pip install streamlit langchain-aws mcp
 
 ---
 
-**Built with ❤️ using modern Python architecture**
