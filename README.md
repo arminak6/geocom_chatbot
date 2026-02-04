@@ -1,13 +1,15 @@
-# 🔥 Crawler Chatbot
+# 🔥 Firecrawl MCP Chatbot
 
-An AI-powered chatbot that intelligently scrapes and analyzes websites using Firecrawl MCP and AWS Bedrock LLM. Built with Streamlit for an intuitive user interface.
+A professional AI-powered chatbot that intelligently scrapes and analyzes websites using Firecrawl MCP and AWS Bedrock LLM. Built with Streamlit for an intuitive user interface.
 
 ## ✨ Features
 
 - **🤖 Intelligent Scraping**: Automatically decides when to scrape websites vs. using cached content
+- **🎯 Smart URL Detection**: Extracts and processes URLs from natural language queries
 - **🔍 Deep Dive Analysis**: Discovers and analyzes multiple related pages for comprehensive answers
 - **📊 Source Citations**: Provides clear references to all scraped sources
 - **💬 Conversational Context**: Maintains chat history for contextual follow-up questions
+- **⚡ Async Processing**: Fast, non-blocking operations for better performance
 
 ## 🏗️ Architecture
 
@@ -97,8 +99,9 @@ Continue asking questions about the same website without repeating the URL:
 
 ### Deep Dive
 Click the **"Go deeper on this site"** button to:
-- Discover and rank relevant subpages
-- Scrape up to 10 most relevant pages
+- Discover related subpages from the website
+- Use LLM to score URLs based on relevance to your question
+- Scrape the top 10 highest-scored pages
 - Get comprehensive analysis with multiple source citations
 
 ### Reset Session
@@ -116,12 +119,13 @@ The chatbot uses a two-stage LLM approach:
 
 - **Single Page**: Scrapes one specific URL
 - **Crawl**: Follows links and scrapes multiple pages (up to 20 pages, depth 3)
-- **Deep Dive**: Maps subpages, scores them for relevance, and scrapes the top 10
+- **Deep Dive**: Maps subpages, uses LLM to score them for relevance, and scrapes the top 10
 
 ### URL Scoring
-Combines two approaches for ranking subpage relevance:
-- **LLM-based scoring** (70% weight): Uses AI to evaluate relevance
-- **Heuristic scoring** (30% weight): Keyword matching in URLs
+The deep dive feature uses **LLM-based scoring** to rank subpage relevance:
+- The LLM evaluates each URL against your specific question
+- Assigns a relevance score from 0-10 to each URL
+- Selects the top 10 most relevant URLs for scraping
 
 ## 📋 Configuration Options
 
@@ -148,7 +152,7 @@ Combines two approaches for ranking subpage relevance:
 │   ├── MCP integration
 │   ├── Firecrawl functions
 │   ├── LLM functions
-│   ├── URL scoring
+│   ├── URL scoring (LLM-based)
 │   └── Main chat logic
 ├── app.py                 # Streamlit UI
 │   ├── Session management
@@ -192,14 +196,21 @@ assert url == "https://www.example.com"
 # Test configuration
 import config
 print(config.AWS_REGION)
-
-# Test heuristic scoring
-from chatbot_core import heuristic_score_url
-score = heuristic_score_url("https://example.com/about", "Who are they?")
 ```
 
+## 🤝 Contributing
 
+Contributions are welcome! The modular architecture makes it easy to:
 
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes in the appropriate module
+4. Test thoroughly
+5. Submit a pull request
+
+## 📝 License
+
+[Add your license here]
 
 ## 🙏 Acknowledgments
 
@@ -208,19 +219,42 @@ score = heuristic_score_url("https://example.com/about", "Who are they?")
 - [Streamlit](https://streamlit.io/) - Web application framework
 - [LangChain](https://www.langchain.com/) - LLM integration
 
+## 📧 Contact
 
+[Add your contact information here]
 
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**Import Errors**
+```bash
+# Ensure you're in the correct directory
+cd c:\sinergia_ak\chatbot\geocom_chatbot
+```
+
+**Firecrawl Connection Failed**
+- Verify Firecrawl is running at the configured URL
+- Check `FIRECRAWL_API_URL` in `config.json`
+
+**AWS Authentication Issues**
+- Verify AWS credentials are set correctly
+- Check IAM permissions for Bedrock access
+- Ensure the region supports your chosen model
+
+**Module Not Found**
+```bash
+# Install missing dependencies
+pip install streamlit langchain-aws mcp
+```
 
 ## 📊 Performance
 
 - **Single page scraping**: ~2-5 seconds
 - **Deep dive analysis**: ~30-60 seconds (depends on number of pages)
 - **LLM response time**: ~1-3 seconds
+- **Concurrent requests**: Supported via async operations
 
+---
 
-
-
-
-
-
-
+**Built with ❤️ using modern Python architecture**

@@ -14,6 +14,7 @@ def reset_conversation():
     st.session_state.last_base_markdown = None
     st.session_state.last_user_question = None
     st.session_state.last_deep_done = False
+    st.session_state.last_deep_question = None
 
 
 def initialize_session_state():
@@ -38,6 +39,9 @@ def initialize_session_state():
         
     if "last_deep_done" not in st.session_state:
         st.session_state.last_deep_done = False
+        
+    if "last_deep_question" not in st.session_state:
+        st.session_state.last_deep_question = None
 
 
 # ====== UI LAYOUT ======
