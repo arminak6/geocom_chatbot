@@ -1,182 +1,179 @@
-# 🔥 Firecrawl MCP Chatbot
+# Firecrawl MCP Chatbot
 
-An AI-powered chatbot that intelligently scrapes and analyzes websites using Firecrawl MCP and AWS Bedrock LLM.
+A Streamlit chatbot that analyzes websites using Firecrawl MCP and AWS Bedrock.
 
-## ✨ Features
+## Features
 
-- **🤖 Intelligent Scraping**: Automatically decides when to scrape websites vs. using cached content
-- **🎯 Smart URL Detection**: Extracts and processes URLs from natural language queries
-- **🔍 Deep Dive Analysis**: Discovers and analyzes multiple related pages for comprehensive answers
-- **📊 Source Citations**: Provides clear references to all scraped sources
-- **⚡ Async Processing**: Fast, non-blocking operations for better performance
+- Intelligent scraping vs. cached-content decisions
+- URL extraction from natural-language questions
+- Deep-dive analysis across multiple related pages
+- Source citations in answers
+- Session-aware follow-up questions
+- Async processing for scraping and answering
 
-## 🏗️ Architecture
+## Project Structure
 
-This project follows a clean, modular architecture with clear separation of concerns:
-
-```
+```text
 geocom_chatbot/
-├── config.py          # Configuration management
-├── utils.py           # Utility functions (URL extraction, text processing)
-├── chatbot_core.py    # Core AI & business logic
-├── app.py             # Streamlit UI layer
-└── main.py            # Entry point wrapper
+|-- src/
+|   |-- app.py
+|   |-- chatbot_core.py
+|   |-- config.py
+|   |-- mcp_firecrawl.py
+|   `-- utils.py
+|-- config.json.example
+|-- compose.yaml
+|-- Dockerfile
+|-- requirements.txt
+`-- README.md
 ```
 
-### Module Responsibilities
-
-- **`config.py`** - Loads configuration from `config.json`, manages environment variables
-- **`utils.py`** - Reusable utilities for text processing, URL extraction, JSON cleaning
-- **`chatbot_core.py`** - LLM integration, Firecrawl MCP, scraping logic, deep dive functionality
-- **`app.py`** - Streamlit interface, session management, user interactions
-- **`main.py`** - Application entry point
-
-## 🚀 Getting Started
-
-### Prerequisites
+## Prerequisites
 
 - Python 3.8+
-- [Firecrawl](https://www.firecrawl.dev/) instance running (self-hosted or cloud)
+- Node.js 18+ for Firecrawl MCP
+- A Firecrawl instance
 - AWS account with Bedrock access
-- Required Python packages (see Installation)
 
-### Installation
+## Configuration
 
-1. **Clone the repository**
-   ```bash
-   git clone <your-repo-url>
-   cd geocom_chatbot
-   ```
+The app can read configuration from either:
 
-2. **Install dependencies**
-   ```bash
-   pip install streamlit langchain-aws mcp
-   ```
+- Environment variables
+- `config.json` in the repo root
 
-3. **Configure the application**
-   
-   Create a `config.json` file in the project root:
-   ```json
-   {
-     "AWS_REGION": "eu-central-1",
-     "MODEL_ID": "openai.gpt-oss-20b-1:0",
-     "FIRECRAWL_API_URL": "http://localhost:3002",
-     "AWS_ACCESS_KEY_ID": "your-aws-access-key",
-     "AWS_SECRET_ACCESS_KEY": "your-aws-secret-key"
-   }
-   ```
+Environment variables take precedence over `config.json`.
 
-   **Note**: You can also set AWS credentials via environment variables instead of including them in `config.json`.
+Example `config.json`:
 
-### Running the Application
+```json
+{
+  "AWS_REGION": "eu-central-1",
+  "MODEL_ID": "openai.gpt-oss-120b-1:0",
+  "FIRECRAWL_API_URL": "http://localhost:3002",
+  "AWS_ACCESS_KEY_ID": "your-aws-access-key-id-here",
+  "AWS_SECRET_ACCESS_KEY": "your-aws-secret-access-key-here"
+}
+```
+
+Important settings:
+
+- `AWS_REGION`
+- `MODEL_ID`
+- `FIRECRAWL_API_URL`
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
+
+## Run Locally
+
+1. Install dependencies:
 
 ```bash
-streamlit run app.py
+pip install -r requirements.txt
 ```
 
-Or use the main.py wrapper:
+2. Copy the config template if you want file-based configuration:
+
 ```bash
-streamlit run main.py
+# Windows
+copy config.json.example config.json
+
+# macOS/Linux
+cp config.json.example config.json
 ```
 
-The application will open in your default browser at `http://localhost:8501`
+3. Start the app:
 
-## 💡 Usage
-
-### Basic Query
-Ask about any website by including the URL in your question:
-```
-"What does https://example.com do?"
+```bash
+streamlit run src/app.py
 ```
 
-### Follow-up Questions
-Continue asking questions about the same website without repeating the URL:
-```
-"What are their main products?"
-"Do they have a contact page?"
-```
+The app is available at `http://localhost:8501`.
 
-### Deep Dive
-Click the **"Go deeper on this site"** button to:
-- Discover related subpages from the website
-- Use LLM to score URLs based on relevance to your question
-- Scrape the top 10 highest-scored pages
-- Get comprehensive analysis with multiple source citations
+## Run with Docker
 
-### Reset Session
-Click **"Reset (new website)"** in the sidebar to start fresh with a different website.
+1. Copy the environment template:
 
-## 🎯 How It Works
+```bash
+# Windows
+copy .env.example .env
 
-### Intelligent Decision Making
-The chatbot uses a two-stage LLM approach:
-
-1. **Planner Agent**: Decides whether to scrape, use cache, or answer directly
-2. **Answer Agent**: Generates responses using scraped content and conversation history
-
-### Web Scraping Modes
-
-- **Single Page**: Scrapes one specific URL
-- **Crawl**: Follows links and scrapes multiple pages (up to 20 pages, depth 3)
-- **Deep Dive**: Maps subpages, uses LLM to score them for relevance, and scrapes the top 10
-
-### URL Scoring
-The deep dive feature uses **LLM-based scoring** to rank subpage relevance:
-- The LLM evaluates each URL against your specific question
-- Assigns a relevance score from 0-10 to each URL
-- Selects the top 10 most relevant URLs for scraping
-
-## 📋 Configuration Options
-
-| Setting | Default | Description |
-|---------|---------|-------------|
-| `AWS_REGION` | `eu-central-1` | AWS region for Bedrock |
-| `MODEL_ID` | `openai.gpt-oss-20b-1:0` | LLM model to use |
-| `FIRECRAWL_API_URL` | `http://localhost:3002` | Firecrawl instance URL |
-| `AWS_ACCESS_KEY_ID` | - | AWS access key (optional if using env vars) |
-| `AWS_SECRET_ACCESS_KEY` | - | AWS secret key (optional if using env vars) |
-
-## 🛠️ Development
-
-### Project Structure
-
-```
-├── config.py              # Configuration loader
-├── utils.py               # Utility functions
-│   ├── extract_json_from_model_output()
-│   ├── strip_reasoning_tags()
-│   └── extract_url_from_text()
-├── chatbot_core.py        # Core business logic
-│   ├── System prompts
-│   ├── MCP integration
-│   ├── Firecrawl functions
-│   ├── LLM functions
-│   ├── URL scoring (LLM-based)
-│   └── Main chat logic
-├── app.py                 # Streamlit UI
-│   ├── Session management
-│   ├── UI rendering
-│   └── Event handlers
-└── main.py                # Entry point
+# macOS/Linux
+cp .env.example .env
 ```
 
+2. Update `.env` with your real values.
 
-## 🙏 Acknowledgments
+If Firecrawl is running on your host machine, this default is usually correct:
 
-- [Firecrawl](https://www.firecrawl.dev/) - Web scraping infrastructure
-- [AWS Bedrock](https://aws.amazon.com/bedrock/) - LLM services
-- [Streamlit](https://streamlit.io/) - Web application framework
-- [LangChain](https://www.langchain.com/) - LLM integration
+```bash
+FIRECRAWL_API_URL=http://host.docker.internal:3002
+```
 
+3. Build and start the container:
 
+```bash
+docker compose up --build
+```
 
+4. Open `http://localhost:8501`
 
-## 📊 Performance
+The Docker image includes Python, Node.js, and a preinstalled `firecrawl-mcp` binary.
 
-- **Single page scraping**: ~2-5 seconds
-- **Deep dive analysis**: ~30-60 seconds (depends on number of pages)
-- **LLM response time**: ~1-3 seconds
-- **Concurrent requests**: Supported via async operations
+## Usage
 
----
+Ask about any site by including a URL, for example:
 
+```text
+What does https://example.com do?
+```
+
+You can then ask follow-up questions without repeating the URL.
+
+Use the deep-dive button to expand analysis across more pages of the same site.
+
+## Development Notes
+
+- UI lives in `src/app.py`
+- Core chatbot logic lives in `src/chatbot_core.py`
+- Firecrawl MCP helpers live in `src/mcp_firecrawl.py`
+- Utility helpers live in `src/utils.py`
+- Configuration logic lives in `src/config.py`
+
+## Quick Test Snippets
+
+```python
+from src.utils import extract_url_from_text
+
+url = extract_url_from_text("Visit www.example.com")
+assert url == "https://www.example.com"
+```
+
+```python
+from src import config
+
+print(config.AWS_REGION)
+```
+
+## Troubleshooting
+
+### Firecrawl connection failed
+
+- Verify Firecrawl is running
+- Check `FIRECRAWL_API_URL`
+- If you are using Docker and Firecrawl runs on your host, prefer `http://host.docker.internal:3002`
+
+### AWS authentication issues
+
+- Verify your credentials are correct
+- Check IAM permissions for Bedrock
+- Confirm the configured AWS region supports your model
+
+### `npx` or Node.js not found
+
+Install Node.js 18+ and verify:
+
+```bash
+node --version
+npx --version
+```

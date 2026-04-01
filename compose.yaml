@@ -1,0 +1,13 @@
+services:
+  geocom-chatbot:
+    build:
+      context: .
+    container_name: geocom-chatbot
+    env_file:
+      - path: .env
+        required: false
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "8501:8501"
+    restart: unless-stopped
